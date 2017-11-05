@@ -15,13 +15,14 @@ from ext_lib.spgl1.spgl1 import spg_bpdn
 
 # import l1ls as L_SOLVER
 
-POWER = 3;
+POWER = 2;
 
 
 def PolyKernel(x , y , gamma=None):
 
     if gamma is None:
         gamma = 1.0 / x.shape[1]
+#    gamma = 1.0;
 
     #return 1 + np.dot( x.T , y );
     #return  np.square(1 +  np.multiply(gamma , np.dot( x.T , y )) );
@@ -54,13 +55,14 @@ class KernelRecon:
        # X = preprocessing.normalize(X, norm='l2', axis=0)
 
         dataXY = np.column_stack((X, y))
+
         # For taking uNiq
-        # b = dataXY[np.lexsort(dataXY.reshape((dataXY.shape[0], -1)).T)];
-        # probUNi = b[np.concatenate(([True], np.any(b[1:] != b[:-1], axis=tuple(range(1, dataXY.ndim)))))]
+        b = dataXY[np.lexsort(dataXY.reshape((dataXY.shape[0], -1)).T)];
+        probUNi = b[np.concatenate(([True], np.any(b[1:] != b[:-1], axis=tuple(range(1, dataXY.ndim)))))]
 
         print("Old Size" , np.shape(dataXY))
-        # print("New Size", np.shape(probUNi))
-        #dataXY = probUNi;
+        print("New Size", np.shape(probUNi))
+        dataXY = probUNi;
 
         gc.collect()
 

@@ -1,4 +1,6 @@
 import gc
+from scipy import sparse
+
 import numpy as np
 import sys
 from sklearn.decomposition import PCA
@@ -13,7 +15,7 @@ from sklearn import preprocessing
 
 from ext_lib.spgl1.spgl1 import spg_bpdn
 
-# import l1ls as L_SOLVER
+import l1ls as L_SOLVER
 
 
 class NormalRecon:
@@ -47,13 +49,15 @@ class NormalRecon:
        # X = preprocessing.normalize(X, norm='l2', axis=0)
 
         dataXY = np.column_stack((X, y))
+
         # For taking uNiq
-        # b = dataXY[np.lexsort(dataXY.reshape((dataXY.shape[0], -1)).T)];
-        # probUNi = b[np.concatenate(([True], np.any(b[1:] != b[:-1], axis=tuple(range(1, dataXY.ndim)))))]
+        b = dataXY[np.lexsort(dataXY.reshape((dataXY.shape[0], -1)).T)];
+        probUNi = b[np.concatenate(([True], np.any(b[1:] != b[:-1], axis=tuple(range(1, dataXY.ndim)))))]
 
         print("Old Size" , np.shape(dataXY))
-        # print("New Size", np.shape(probUNi))
-        #dataXY = probUNi;
+        print("New Size", np.shape(probUNi))
+        dataXY = probUNi;
+
 
         gc.collect()
 
@@ -112,6 +116,8 @@ class NormalRecon:
         print()
         gc.collect();
 
+        sP = sparse.csr_matrix(P);
+
         for glob_index in range( LIMIT ):
             print("#" + str(glob_index) , " ")
 
@@ -125,6 +131,8 @@ class NormalRecon:
             #
             # yeta = yeta.reshape( (np.shape(yeta)[0] , ) )
 
+
+            #[ coeff_X , _ , _  ] = L_SOLVER.l1ls( sP , b ,lmbda= 0.01 , tar_gap= 0.01);
 
             coeff_X, resid, grad, info = spg_bpdn( P, yeta, sigma)
 

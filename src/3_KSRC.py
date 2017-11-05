@@ -15,11 +15,11 @@ for i in ["1", "2", "3", "4", "5"]:
 
     y_test = convert_non_one_hot(y_test, True);
 
-    X_test = X_test[0: 1000]
-    y_test = y_test[0: 1000]
+    X_test = X_test[10: 20]
+    y_test = y_test[10: 20]
 
-    X_train = X_train[0: 8000]
-    y_train = y_train[0: 8000]
+    X_train = X_train
+    y_train = y_train
 
     print("Test Size", np.shape(y_test))
 
